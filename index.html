@@ -22,37 +22,37 @@
     function generateId () {
       return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
     }
-          // Library Code
-    function createStore (reducer) {
-      // The store should have four parts
-      // 1. The state
-      // 2. Get the state.
-      // 3. Listen to changes on the state.
-      // 4. Update the state
+    //       // Library Code
+    // function createStore (reducer) {
+    //   // The store should have four parts
+    //   // 1. The state
+    //   // 2. Get the state.
+    //   // 3. Listen to changes on the state.
+    //   // 4. Update the state
 
-      let state
-      let listeners = []
+    //   let state
+    //   let listeners = []
 
-      const getState = () => state
+    //   const getState = () => state
 
-      const subscribe = (listener) => {
-        listeners.push(listener)
-        return () => {
-          listeners = listeners.filter((l) => l !== listener)
-        }
-      }
+    //   const subscribe = (listener) => {
+    //     listeners.push(listener)
+    //     return () => {
+    //       listeners = listeners.filter((l) => l !== listener)
+    //     }
+    //   }
 
-      const dispatch = (action) => {
-        state = reducer(state, action)
-        listeners.forEach((listener) => listener())
-      }
+    //   const dispatch = (action) => {
+    //     state = reducer(state, action)
+    //     listeners.forEach((listener) => listener())
+    //   }
 
-      return {
-        getState,
-        subscribe,
-        dispatch,
-      }
-    }
+    //   return {
+    //     getState,
+    //     subscribe,
+    //     dispatch,
+    //   }
+    // }
 
     // App Code
     const ADD_TODO = 'ADD_TODO'
@@ -121,14 +121,56 @@
       }
     }
 
-    function app (state = {}, action) {
-      return {
-        todos: todos(state.todos, action),
-        goals: goals(state.goals, action),
-      }
+    // function app (state = {}, action) {
+    //   return {
+    //     todos: todos(state.todos, action),
+    //     goals: goals(state.goals, action),
+    //   }
+    // }
+
+    function checkAndDispatch (store, action) {
+      
     }
 
-    const store = createStore(app)
+    //Middlewares
+
+    const checker = (store) => (next) => (action) => {
+      if (action.type === ADD_TODO &&
+      action.todo.name.toLowerCase().includes('bitcoin')
+      ) {
+        return alert("Nope. That's a bad idea.")
+      }
+
+      if (action.type === ADD_GOAL &&
+      action.goal.name.toLowerCase().includes('bitcoin')
+      ) {
+        return alert("Nope. That's a bad idea.")
+      }
+
+      return next(action)
+    }
+
+    const logger = (store) => (next) => (action) => {
+      console.group(action.type)
+      console.log('The action:', action)
+        const result = next(action)
+        console.log('The new state is:', store.getState())
+      console.groupEnd()
+
+      return result
+    }
+
+    const goalAffirmation = (store) => (next) => (action) => {
+      if (action.type === ADD_GOAL) {
+        alert("That's a great goal")
+      }
+      return next(action)
+    }
+
+    const store = Redux.createStore(Redux.combineReducers({
+      todos,
+      goals
+    }), Redux.applyMiddleware(checker, logger, goalAffirmation))
 
     store.subscribe(() => {
       const { goals, todos } = store.getState()
