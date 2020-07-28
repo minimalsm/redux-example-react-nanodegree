@@ -167,10 +167,19 @@
       return next(action)
     }
 
+    const todoReminder = (store) => (next) => (action) => {
+      if (action.type === ADD_TODO) {
+        alert(`Don't forget to ${action.todo.name}`)
+      }
+      return next(action)
+    }
+
+
+
     const store = Redux.createStore(Redux.combineReducers({
       todos,
       goals
-    }), Redux.applyMiddleware(checker, logger, goalAffirmation))
+    }), Redux.applyMiddleware(checker, logger, goalAffirmation, todoReminder))
 
     store.subscribe(() => {
       const { goals, todos } = store.getState()
