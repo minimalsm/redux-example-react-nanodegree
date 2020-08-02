@@ -389,15 +389,49 @@
 
           return (
             <div>
-              <Todos todos={todos} store={this.props.store} />
-              <Goals goals={goals} store={this.props.store} />
+              <Context.Consumer>
+                {(store) => (
+                  <Todos todos={todos} />
+                )}
+              </Context.Consumer>
+              <Context.Consumer>
+                {(store) => (
+                  <Goals goals={goals} />
+                )}
+              </Context.Consumer>
             </div>
           )
         }
       }
 
+      class ConnectedApp extends React.Component {
+        render() {
+          return (
+            <Context.Consumer>
+              {(store) => (
+                <App store={store} />
+              )}
+            </Context.Consumer>
+          )
+        }
+      }
+
+      const Context = React.createContext()
+
+      class Provider extends React.Component {
+        render () {
+          return (
+            <Context.Provider value={this.props.store}>
+              {this.props.children}
+            </Context.Provider>
+          )
+        }
+      }
+
       ReactDOM.render(
-        <App store={store} />,
+        <Provider store={store}>
+          <ConnectedApp />
+        </Provider>,
         document.getElementById('app')
       )
     </script>
