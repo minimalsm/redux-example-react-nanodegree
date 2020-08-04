@@ -1,4 +1,4 @@
-import { applyMiddle}
+import { applyMiddlemare } from 'redux'
 
 const logger = (store) => (next) => (action) => {
   console.group(action.type)
