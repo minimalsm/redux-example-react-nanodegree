@@ -1,12 +1,10 @@
 import checker from './checker'
 import logger from './logger'
-import thunk from 'react-thunk'
+import thunk from 'redux-thunk'
 import { applyMiddleware } from 'redux'
 
-applyMiddleware(
+export default applyMiddleware(
   thunk,
   checker,
   logger
-)
-
-export default applyMiddleware
+) 

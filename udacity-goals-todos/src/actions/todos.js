@@ -11,7 +11,7 @@ function addTodo (todo) {
   }
 }
 
-function removeTodo (xqid) {
+function removeTodo (id) {
   return {
     type: REMOVE_TODO,
     id,
@@ -29,7 +29,7 @@ function handleAddTodo (name, cb) {
   return (dispatch) => {
     return API.saveTodo(name)
         .then((todo) => {
-          dispatch(addTodoAction(todo))
+          dispatch(addTodo(todo))
           cb()
         })
         .catch(() => {
@@ -62,4 +62,4 @@ function handleToggle (id) {
   }
 }
 
-export { handleAddTodo, handleAddTodo, handleToggle }
+export { handleAddTodo, handleDeleteTodo, handleToggle }
